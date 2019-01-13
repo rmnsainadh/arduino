@@ -1,0 +1,120 @@
+#include <Servo.h>
+Servo servo1;
+int pos1=0;
+
+int motorPin1 = 4;
+int motorPin2 = 5;
+int motorPin3= 6;  
+int motorPin4= 7;
+int relaypin=11;
+int ledpin=2;
+int buzzerpin=3;
+int sensorValue=0;
+
+
+
+void setup() {
+  
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+  pinMode(motorPin3, OUTPUT);
+  pinMode(motorPin4,OUTPUT);
+  pinMode(relaypin,OUTPUT);
+  //pinMode(enablePin1,OUTPUT);
+  //pinMode(enablePin2,OUTPUT);
+  servo1.attach(10);  
+  Serial.begin(9600);
+ 
+}
+
+//Infinite loop for constant listening
+
+void loop() { 
+     
+  sensorValue = analogRead(A0);
+  
+  Serial.println(sensorValue);
+  delay(1);
+
+  if(sensorValue>70)
+  { Serial.println("FIRE");
+    digitalWrite(ledpin,HIGH);
+    delay(250);
+    digitalWrite(ledpin,LOW);
+    delay(250);
+    digitalWrite(buzzerpin,HIGH);
+    delay(250);
+    digitalWrite(buzzerpin,LOW);
+    delay(250);
+  }
+
+ 
+
+  
+    if (Serial.available() > 0) {
+    char s = Serial.read();
+    Serial.println(s);
+      if(s == 'i'){
+   pos1=pos1+30;
+   servo1.write(pos1);
+   delay(15);
+   //if (pos == 180) {pos=0;}
+   }
+  else if(s == 'j') 
+  {   pos1=pos1-30; 
+   servo1.write(pos1);
+   delay(15);
+       }
+    
+    
+  
+    if (s == 'z'){
+          digitalWrite(relaypin, HIGH);
+          Serial.println("on");
+    }
+    if (s == 'x'){
+      digitalWrite(relaypin, LOW);
+      Serial.println("off");
+    }
+    
+    
+    if (s == 'f'){
+    Serial.println("FORWARD");
+    //analogWrite(enablePin1, 100);
+    //analogWrite(enablePin2, 100);
+    digitalWrite(motorPin1, HIGH);
+    digitalWrite(motorPin2, LOW);
+    digitalWrite(motorPin3, HIGH);
+    digitalWrite(motorPin4, LOW);
+   
+   
+    }
+    else if (s == 'b') {
+    Serial.print("BACKWARD");
+    //analogWrite(enablePin1, 255);
+    //analogWrite(enablePin2, 255);
+     digitalWrite(motorPin1, LOW);
+    digitalWrite(motorPin2, HIGH);
+    digitalWrite(motorPin3, LOW);
+    digitalWrite(motorPin4, HIGH);
+    }
+   
+     if (s == 'l') {
+    Serial.print("LEFT");
+    digitalWrite(motorPin1, HIGH);
+    digitalWrite(motorPin2, LOW);
+    digitalWrite(motorPin3, LOW);
+    digitalWrite(motorPin4, HIGH);
+    }
+    else if ( s == 's'){
+    Serial.print("STOP");
+    digitalWrite(motorPin1, LOW);
+    digitalWrite(motorPin2, LOW);
+    digitalWrite(motorPin3, LOW);
+    digitalWrite(motorPin4, LOW);
+   
+    }
+  
+    
+   }
+}
